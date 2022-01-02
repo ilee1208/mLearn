@@ -1,0 +1,11 @@
+<!--상속(extend)을 통해 처리-->
+{% extends 'base_generic.html' %}
+
+
+<!--header부분만 수정-->
+{% block header %}
+
+    {% include './header.html' %}
+
+{% endblock %}
+

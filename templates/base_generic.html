@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+<head>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--for jquery-->
+    <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+
+    <!--for ajax-->
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/poppeer.min.js"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.15.0/esm/popper.min.js"></script>
+
+
+    <!--for ckeditor -->
+    <!--    <script type="text/javascript" src="{% static 'resource/ckeditor/ckeditor-init.js' %}"></script>-->
+    <script type="text/javascript" src="{% static 'resource/ckeditor5/ckeditor.js' %}"></script>
+
+    <!--for boostrap4-->
+    <script src="{% static 'resource/bootstrap-4.1.2/js/bootstrap.min.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'resource/bootstrap-4.1.2/css/bootstrap.min.css' %}">
+
+<!--    stylesheet 부분 블록 -->
+    {% block stylesheet %}
+    {% endblock %}
+
+    <title>
+        {% block title %} Project Name {% endblock %}
+    </title>
+</head>
+
+<body>
+    <div class="container">
+
+        <div>
+            {% block header %}
+            {% endblock %}
+        </div>
+
+        <div class="row">
+
+            {% block sidebar %}
+            {% endblock %}
+
+            {% block content %}
+            {% endblock %}
+
+        </div>
+
+    </div>
+
+<!--js 부분 블록-->
+    {% block js %}
+    {% endblock %}
+
+</body>
+</html>
+

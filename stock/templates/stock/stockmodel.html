@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+#Home{
+	background-image:url("{% static '/image/main/noisy_blue.jpg' %}");
+}
+span {
+    border-radius: 10px; background-color: #ffe0e0; padding:8px;
+}
+
+</style>
+
+<div id="Home" class="col-11 p-4 m-4">
+<form name="form_option">
+
+    {% csrf_token %}
+
+    <h5> 주가 예측 </h5><br/>
+    <h6> 예) https://finance.yahoo.com/quote/IBM/history?p=IBM  에서 5년간 주가 데이터를 DeepFrame/refStage/stock/ibm.csv 파일로 저장 </h6><br/>
+
+    <h5> 종목 선택? </h5><br/>
+    <div class="form-check-inline">
+        <label class="form-check-label">
+            <input type="radio" class="form-check-input" name="item" value="ibm">IBM
+        </label>
+    </div>
+    <div class="form-check-inline">
+        <label class="form-check-label">
+            <input type="radio" class="form-check-input" name="item" value="msft">MSFT
+        </label>
+    </div>
+    <div class="form-check-inline">
+        <label class="form-check-label">
+            <input type="radio" class="form-check-input" name="item" value="nvda">NVIDA
+        </label>
+    </div>
+    <div class="form-check-inline">
+        <label class="form-check-label">
+            <input type="radio" class="form-check-input" name="item" value="googl">Google
+        </label>
+    </div>
+    <div class="form-check-inline">
+        <label class="form-check-label">
+            <input type="radio" class="form-check-input" name="item" value="005930.KS">Samsung
+        </label>
+    </div>
+    <br/><br/>
+    <div>=====================================================================</div>
+
+    <h5> 옵션1: 최신 주가 업데이트?(deepstock/refStage/stock폴더에 "종목명.csv"로 저장) </h5><br/>
+    <div class="form-check-inline">
+        <label class="form-check-label">
+            <input type="radio" class="form-check-input" name="update" value="update">최신주가 업데이트
+        </label>
+    </div>
+    <div class="form-check-inline">
+        <label class="form-check-label">
+            <input type="radio" class="form-check-input" name="update" value="2"> 기타 옵션
+        </label>
+    </div>
+    <br/><br/><br/>
+
+    <h5> 옵션 #2: 그래프? 관련 뉴스? </h5><br/>
+    <div class="form-check-inline">
+        <label class="form-check-label">
+            <input type="radio" class="form-check-input" name="option" value="plot">예상주가비교
+        </label>
+    </div>
+    <div class="form-check-inline">
+        <label class="form-check-label">
+            <input type="radio" class="form-check-input" name="option" value="news"> 관련 뉴스
+        </label>
+    </div>
+    <br/>
+    <br/><br/>
+
+    <h5> 옵션 #3: 자동매매 학습 or 매매 추천</h5><br/>
+
+    <div class="form-check-inline">
+        <label class="form-check-label">
+            <input type="radio" class="form-check-input" name="trade" value="train">자동매매 학습
+        </label>
+    </div>
+    <div class="form-check-inline">
+        <label class="form-check-label">
+            <!--<input type="radio" class="form-check-input" name="optradio3" value="action">매매추천-->
+            <input type="radio" class="form-check-input" name="trade" value="action">매매추천
+        </label>
+    </div>
+    <div class="form-check-inline">
+        <label class="form-check-label">
+            <input type="radio" class="form-check-input" name="trade" value="2">기타옵션
+        </label>
+    </div>
+    <br/><br/>
+
+    <div id="resp_1"></div><br/>
+    <div id="resp_2"></div><br/>
+
+    <input id="text_submit" type="button" value="Enter"/>
+
+</form>
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+
+    <!--## 일반적인 form 형태(POST) 방식 전송-->
+
+    $("#text_submit").on('click', function() {
+
+        var frm = document.form_option;
+
+        if(frm.item.value == ""){alert("Enter stock-item!");return false;}
+
+        frm.action = "{% url 'stock:stockmodel' %}";
+        frm.method = "POST";
+        frm.submit();
+
+    });
+
+<!--    ## AJAX 형식으로 전송-->
+<!--    $("#text_submit").on('click', function() {-->
+
+<!--        var frm = document.form_option;-->
+
+<!--        var item = frm.item.value;-->
+<!--        var option = frm.option.value;-->
+<!--        var trade = frm.trade.value;-->
+<!--        var update = frm.update.value;-->
+<!--        &lt;!&ndash;var weights = $('#weights').val();&ndash;&gt;-->
+
+<!--        var url2 = "{% url 'stock:stockmodel' %}";-->
+
+<!--        $.ajax({-->
+<!--            type : "POST",-->
+<!--            url : url2,-->
+<!--            data : {-->
+<!--                'item' : item,-->
+<!--                'trade' : trade,-->
+<!--                'option' : option,-->
+<!--                'update' : update,-->
+<!--                &lt;!&ndash;'weights' : weights,&ndash;&gt;-->
+<!--                'csrfmiddlewaretoken': '{{ csrf_token }}',-->
+<!--            },-->
+<!--            success : function(resp){-->
+
+<!--                &lt;!&ndash;json 타입의 respe데이터를 dictionary 타입으로 parse JQuery&ndash;&gt;-->
+<!--                var resp = jQuery.parseJSON(resp);-->
+
+<!--                var html_1 = "<div><span> 최종일 주가 : " + resp.resp0 +-->
+<!--                    "</span></br></br><span> 내일 예상 주가 : " + resp.resp1 +-->
+<!--                    "(" + resp.rate +-->
+<!--                    "%)</span></br></br><span> 매매 추천 : " + resp.action +-->
+<!--                    "</div>";-->
+
+<!--                $("#resp_1").html(html_1);-->
+
+<!--&lt;!&ndash;                var article_str = new String(resp.article_list);&ndash;&gt;-->
+<!--&lt;!&ndash;                var href_str = new String(resp.href_list);&ndash;&gt;-->
+<!--&lt;!&ndash;                var article_list = article_str.split(',');&ndash;&gt;-->
+<!--&lt;!&ndash;                var href_list = href_str.split(',');&ndash;&gt;-->
+
+<!--&lt;!&ndash;                var html_news = "";&ndash;&gt;-->
+<!--&lt;!&ndash;                for(var i in article_list){&ndash;&gt;-->
+<!--&lt;!&ndash;                    var html_2 = "<div><a href=https://news.google.com" + href_list[i] + "</a>" + article_list[i] + "<br/><br/>";&ndash;&gt;-->
+<!--&lt;!&ndash;                    var html_news = html_news + html_2;&ndash;&gt;-->
+<!--&lt;!&ndash;                };&ndash;&gt;-->
+
+<!--&lt;!&ndash;                $("#resp_2").html(html_news);&ndash;&gt;-->
+<!--            }-->
+<!--        });-->
+<!--    });-->
+
+
+</script>
+{% endblock %}

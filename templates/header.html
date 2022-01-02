@@ -1,0 +1,204 @@
+
+<script type="text/javascript">
+
+function loginPro(){
+	var obj1 = document.loginForm;
+
+	if(obj1.username.value==""){alert("아이디를 입력해주세요"+screen.width + '50'); return;}
+	if(obj1.password.value==""){alert("비밀번호를 입력해주세요"); return;}
+
+
+	var dataList1 = {
+		"username" : obj1.username.value,
+		"password" : obj1.password.value,
+		'csrfmiddlewaretoken': '{{ csrf_token }}'
+	};
+
+	var url1 = "{% url 'home:login' %}";
+
+	$.ajax({
+		type : "POST",
+		url : url1,
+		async : false,
+		data : dataList1,
+		success : function(data){
+			window.location.href="{% url 'home:index' %}";
+		}
+	});
+}
+
+function joinPro(){
+
+	var obj2 = document.joinForm;
+
+	if(obj2.username.value==""){alert("아이디를 입력해주세요"); return;}
+	if(obj2.password1.value==""){alert("비밀번호를 입력해주세요"); return;}
+	if(obj2.password2.value==""){alert("비밀번호를 입력해주세요"); return;}
+	if(obj2.email.value==""){alert("이메일를 입력해주세요"); return;}
+
+	var dataList2 = {
+		"username" : obj2.username.value,
+		"password1" : obj2.password1.value,
+		"password2" : obj2.password2.value,
+		"email" : obj2.email.value,
+		'csrfmiddlewaretoken': '{{ csrf_token }}'
+	};
+
+	var url2 = "{% url 'home:join' %}";
+
+	alert(dataList2.username);
+
+	$.ajax({
+		type : "POST",
+		url : url2,
+		async : false,
+		data : dataList2,
+		success : function(data){
+			window.location.href="{% url 'home:index' %}";
+		}
+	});
+}
+
+</script>
+
+<div id="header_container">
+    <!-- header part -->
+	<nav class="navbar navbar-expand-md bg-dark navbar-dark ">
+
+		<!-- Brand -->
+		<a class="navbar-brand" href="{% url 'home:index' %}">
+		<h2>AI World</h2></a>
+
+		<!-- Toggler/collapsibe Button -->
+		<!--		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">-->
+		<!--		    <span class="navbar-toggler-icon"></span>-->
+		<!--		</button>-->
+
+		<!-- Navbar links -->
+		<div class="collapse navbar-collapse" id="collapsibleNavbar">
+
+			<!--search-form -->
+	  		<form class="d-flex justify-content-around " action="">
+	    		<input class="form-control col-8" type="text" placeholder="Search"> &nbsp;
+				<button class="form-control col-4 btn btn-success" type="submit">찾기</button>
+	  		</form>&nbsp;&nbsp;
+
+			<!--<form class="d-flex justify-content-around " action="">-->
+			<!--<input class="form-control" type="text" placeholder={{1st}}{{2nd}}{{3rd}}>-->
+			<!--</form>&nbsp;-->
+
+
+			<ul class="navbar-nav ml-auto">
+
+				{% if user.is_authenticated %}
+
+					<li class="text-white d-none d-lg-inline-flex">Hi {{ user.username }}!</li>&nbsp;&nbsp;
+
+				  	<li class="nav-item active">
+					    <a class="btn btn-primary order-1" href="{% url 'home:logout' %}">logout</a>
+	                </li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+	                <li class="nav-item dropdown">
+						<a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">My Page</a>
+						<div class="dropdown-menu">
+							<a class="dropdown-item" href="#">회원정보</a>
+							<a class="dropdown-item" href="#">My 게시글</a>
+						</div>
+					</li>
+
+    			{% else %}
+					<li class="nav-item active ">
+					    <!-- Button to Open the Modal -->
+						<a class="btn btn-primary order-1" href="#loginModal" data-toggle="modal">로그인</a>
+						<!--<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#loginModal">로그인 </button> -->
+	                </li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+					<li class="nav-item ">
+
+						<a class="btn btn-primary order-2" href="#joinModal" data-toggle="modal">회원가입</a>
+
+	              	</li>
+
+    			{% endif %}
+
+		    </ul>
+		</div>
+	</nav>
+    <!--end header-->
+
+    <!--==========================================================================-->
+	<!-- The Login Modal 이용시 -->
+	<div class="modal" id="loginModal">
+	  <div class="modal-dialog">
+
+	    <div class="modal-content">
+
+	    <!-- // 폼형태로 입력하여 ajax 형태로 전달 -->
+		<form name="loginForm" method="post" onSubmit="return loginCheck()">
+
+	      <!-- Modal Header -->
+	      <div class="modal-header">
+	        <h4 class="modal-title">Login</h4>
+	        <button type="button" class="close" data-dismiss="modal">&times;</button>
+	      </div>
+
+	      <!-- Modal body -->
+	      <div class="modal-body">
+	        <span class="fa fa-envelope"></span> 아이디(ID) <br />
+			<input type="text" class="form-control" name="username" /><br /> <br />
+			<span class="fa fa-lock"></span> 비밀번호 <br />
+			<input type="password" class="form-control" name="password" /><br /> <br />
+	      </div>
+
+	      <!-- Modal footer -->
+	      <div class="modal-footer">
+	      	<button type="button" class="btn" data-dismiss="modal">Close</button>
+	      	<button type="button" class="btn btn-success" onclick="loginPro()">로그인</button>
+	      </div>
+
+		</form>
+	    </div>
+	  </div>
+	</div>
+    <!--end login modal-->
+
+	<!--==========================================================================-->
+	<!-- The Join Modal 이용시 -->
+	<div class="modal" id="joinModal">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+
+	    <!-- // 폼형태로 입력하여 ajax 형태로 전달 -->
+		<form name="joinForm" method="post" onSubmit="return loginCheck()">
+
+	      <!-- Modal Header -->
+	      <div class="modal-header">
+	        <h4 class="modal-title">Join</h4>
+	        <button type="button" class="close" data-dismiss="modal">&times;</button>
+	      </div>
+
+	      <!-- Modal body -->
+	      <div class="modal-body">
+	        <span class="fa fa-envelope"></span> 아이디(ID) <br />
+			<input type="text" class="form-control" name="username" /><br />
+			<span class="fa fa-lock"></span> 비밀번호 <br />
+			<input type="password" class="form-control" name="password1" /><br />
+			<span class="fa fa-lock"></span> 비밀번호확인 <br />
+			<input type="password" class="form-control" name="password2" /><br />
+			<span class="fa fa-lock"></span> 이메일 <br />
+			<input type="text" class="form-control" name="email" /><br />   <br />
+		  </div>
+
+	      <!-- Modal footer -->
+	      <div class="modal-footer">
+	      	<button type="button" class="btn" data-dismiss="modal">Close</button>
+	      	<button type="button" class="btn btn-success" onclick="joinPro()">회원등록</button>
+	      </div>
+
+		</form>
+	    </div>
+	  </div>
+	</div>
+    <!--end join modal-->
+
+</div>

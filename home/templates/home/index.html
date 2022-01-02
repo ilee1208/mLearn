@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<!--content부분만 수정-->
+{% block content %}
+
+<style type="text/css">
+
+#body_index{
+	background-image:url("{% static '/image/main/city_night.png' %}");
+	width :1200px;
+	height : 600px;
+	margin-left : 15px;
+	margin-right : 15px;
+}
+
+img {
+  display: block;
+  max-width:230px;
+  max-height:95px;
+  width: auto;
+  height: auto;
+}
+
+/* @media screen and (max-width:768px){
+  .card-body{max-height:2em; padding:0;align:center;}
+  .card-title{margin:0;align:center;font-size: 0.3em; }
+} */
+
+</style>
+
+<script type="text/javascript">
+
+<!--첫화면 에니메이션 처리-->
+$(function(){
+
+    $("dd").slice(0, 9).show(); 					// select the first 9
+
+    $("#loadMore").click(function(e){ 				// click event for load more
+        e.preventDefault();
+        $("dd:hidden").slice(0, 3).show(); 			// select next 3 hidden divs and show them
+        if($("div:hidden").length == 0){ 			// check if any hidden divs still exist
+        	$("#loadMore").fadeOut('slow');
+            	//alert("No more divs"); 			// alert if there are none left
+        	}
+        $('html,body').animate({
+            scrollTop: $(this).offset().top
+        }, 1500);
+    });
+});
+
+</script>
+<script src="{% static 'js/more_load.js' %}">
+</script>
+
+<div id="body_index" class="p-5">
+
+    <!-- main content -->
+    <div class="row col-md-10 offset-md-1 d-flex justify-content-around">
+
+		<dd class="col-4 mb-4" style="display:none;">
+			<div class="card" id="more"  >
+	    		<a href="{% url 'stock:stockhome' %}"><img class="card-img-top img-fluid rounded" src="{% static '/image/green/green_6.jpg' %}" alt="Card image" style="width:100%"></a>
+	    		<div class="card-body p-1 d-flex justify-content-center">
+	      			<a href="{% url 'stock:stockhome' %}"><h6 class="card-title" style="font-size:3vw">Stock</h6></a>
+	    		</div>
+	  		</div>
+		</dd>
+
+
+	</div>
+
+	<div class="text-center">
+		<input type="button" id="loadMore" class="btn btn-success" value="더보기" />
+		<input type="button" class="btn btn-success" value="돌아가기" onclick="history.back(); return false ;" />
+	</div>
+
+  	<p class="totop"><a href="#top">Back to top</a></p>
+
+</div>     <!-- end of body_container -->
+{% endblock %}

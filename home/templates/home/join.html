@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Join
+{% endblock %}
+
+{% block content %}
+
+    <form method="post" action="{% url 'base:join' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">회원가입</button>
+    </form>
+
+{% endblock %}

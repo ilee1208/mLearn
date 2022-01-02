@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+#Home{
+	background-image:url("{% static '/image/main/noisy_blue.jpg' %}");
+}
+span {
+    border-radius: 10px; background-color: #ffe0e0; padding:8px;
+}
+
+</style>
+
+<div id="Home" class="col-11 p-4 m-4">
+<form name="form_option">
+
+    <h5>Qlearn-trading 주식 자동 매매 </h5><br/>
+    <h6> 예) https://finance.yahoo.com/quote/IBM/history?p=IBM  에서 5년간 주가 데이터를 DeepFrame/refStage/stock/ibm.csv 파일로 저장 </h6><br/>
+
+    <h5> 보유 종목? </h5><br/>
+    <div class="form-check-inline">
+        <label class="form-check-label">
+            <input type="checkbox" name = "stock" class="form-check-input" value="ibm">IBM
+        </label>
+    </div>
+    <div class="form-check-inline">
+        <label class="form-check-label">
+            <input type="checkbox" name = "stock" class="form-check-input" value="googl">Google
+        </label>
+    </div>
+    <div class="form-check-inline">
+        <label class="form-check-label">
+            <input type="checkbox" name = "stock" class="form-check-input" value="msft">MSFT
+        </label>
+    </div>
+    <br/><br/>
+
+
+    <div>====================================================================================</div>
+    <h5> 옵션1: 최신 주가 업데이트?(deepstock/refStage/stock폴더에 "종목명.csv"로 저장) </h5><br/>
+    <div class="form-check-inline">
+        <label class="form-check-label">
+            <input type="radio" class="form-check-input" name="optradio" value="update">최신주가 업데이트
+        </label>
+    </div>
+    <div class="form-check-inline">
+        <label class="form-check-label">
+            <input type="radio" class="form-check-input" name="optradio" value="train">학습
+        </label>
+    </div>
+    <div class="form-check-inline">
+        <label class="form-check-label">
+            <input type="radio" class="form-check-input" name="optradio" value="test">Test
+        </label>
+    </div>
+    <br/><br/>
+
+    <div id="resp"></div><br/>
+
+    <input id="text-submit" type="button" value="Enter"/>
+
+</form>
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+
+
+    $("#text-submit").on('click', function() {
+
+        var frm = document.form_option;
+
+        var items = new Array();
+
+        $("input:checkbox:checked").each(function() {
+           items.push($(this).val());
+        });
+
+
+        <!--array to String-->
+        var items = items.toString();
+
+
+        var option = frm.optradio.value;
+
+        var url2 = "{% url 'stock:stocktrade' %}";
+
+
+        $.ajax({
+            type : "POST",
+            url : url2,
+            data : {
+                'items' : items,
+                'option' : option,
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+            success : function(resp){
+
+                <!--json 타입의 respe데이터를 dictionary 타입으로 parse JQuery-->
+                <!--var resp = jQuery.parseJSON(resp);-->
+
+                var html = "<div class='bot'><span> 매매 추천 : " + resp +
+                    "</div>";
+
+                $("#resp").html(html);
+            }
+        });
+
+    });
+
+
+</script>
+{% endblock %}

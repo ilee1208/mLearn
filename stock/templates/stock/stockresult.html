@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+#Home{
+	background-image:url("{% static '/image/main/noisy_blue.jpg' %}");
+}
+span {
+    border-radius: 10px; background-color: #ffe0e0; padding:8px;
+}
+
+</style>
+
+
+<div id="Home" class="col-11 p-4 m-4">
+
+    <h5>Mystock 일일 주가 예측 </h5><br/>
+
+    <h5> 종목 :  {{item}} </h5><br/>
+
+    <div>
+        <span> 최종일 주가 : {{resp0}} </span><br/><br>
+        <span> 내일 예상 주가 : {{resp1}} ( {{rate}} %)</span></br><br/>
+        <span> 매매 추천 : {{action}} </span><br/><br/>
+    </div></br><br/>
+
+    {% if article_dict %}
+    {{item}} 관련뉴스 <br/>
+    {% for key, value in article_dict.items %}
+
+    <div>
+        <a href="https://news.google.com{{value}}">{{key}}</a><br/><br/>
+
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <div class="d-flex p-3">
+        &nbsp;
+  		<input class="btn btn-info p-2" value="이전 돌아가기" onclick="history.back(); return false;"/>&nbsp;&nbsp;
+  		<a class="mx-auto btn btn-secondary" href="{% url 'stock:stockhome' %}" role="button">Stock</a>
+
+    </div>
+
+</div>
+
+{% endblock %}
